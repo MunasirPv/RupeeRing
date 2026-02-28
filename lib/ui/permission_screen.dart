@@ -96,7 +96,7 @@ class _PermissionScreenState extends State<PermissionScreen>
               ),
               const SizedBox(height: 16),
               const Text(
-                'AutoAlert works like a digital soundbox. It requires access to your notifications to detect incoming UPI payments from Paytm, PhonePe, GPay, and others, and announce the amount automatically.',
+                'RupeeRing works like a digital soundbox. It requires access to your notifications to detect incoming UPI payments from Paytm, PhonePe, GPay, and others, and announce the amount automatically.',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.black87,

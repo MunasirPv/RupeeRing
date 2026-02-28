@@ -1,16 +1,41 @@
-# upi_alert
+# RupeeRing 🔔
+The 100% Free, Open-Source UPI Payment Soundbox
 
-A new Flutter project.
+RupeeRing turns any Android device into a smart payment announcer. Designed for merchants, freelancers, and small business owners, it listens for incoming payment notifications from major UPI apps and announces the amount out loud—just like a physical soundbox, but without the subscription fees, hardware costs, or intrusive ads.
 
-## Getting Started
+## ✨ Features
+* **100% Free & Open Source:** No hidden charges, no premium tiers.
+* **Zero Ads:** A clean, distraction-free interface built for fast-paced retail environments.
+* **Universal UPI Support:** Works seamlessly with PhonePe, Google Pay, Paytm, BHIM, BharatPe, Navi, and other standard UPI apps.
+* **Privacy First:** RupeeRing operates locally on your device. It only reads payment notifications to trigger the Text-to-Speech (TTS) engine and does not collect or transmit your financial data.
+* **Customizable Alerts:** Adjust the volume, voice, and language (English, Hindi, Malayalam) of the announcements.
+* **Local Transaction History:** Includes a filterable dashboard to browse the last 30-days of payments out-of-the-box.
 
-This project is a starting point for a Flutter application.
+## 🛠️ Tech Stack
+* **Framework:** Flutter / Dart
+* **Core Functionality:** Android NotificationListenerService & Shared Preferences Storage
+* **Data Layer:** SQLite Database (sqflite)
+* **Audio:** Native Text-to-Speech (TTS) implementation via flutter_tts
 
-A few resources to get you started if this is your first Flutter project:
+## 🚀 Getting Started
+To build and run this project locally, ensure you have the Flutter SDK installed on your system.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### 1. Clone the repository
+```bash
+git clone https://github.com/MunasirPv/RupeeRing.git
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 2. Navigate to the project directory
+```bash
+cd RupeeRing
+```
+
+### 3. Install dependencies
+```bash
+flutter pub get
+```
+
+### 4. Run the app
+```bash
+flutter run
+```

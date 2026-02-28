@@ -80,7 +80,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           ListTile(
             leading: const Icon(Icons.info_outline),
-            title: const Text('About AutoAlert'),
+            title: const Text('About RupeeRing'),
             subtitle: const Text('Open Source UPI Soundbox v1.0.0'),
             onTap: () {
               showDialog(
@@ -88,7 +88,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 builder: (context) => AlertDialog(
                   title: const Text('About'),
                   content: const Text(
-                    'AutoAlert is an open-source alternative to hardware soundboxes. It works by securely listening to incoming notifications of UPI apps running on your device.',
+                    'RupeeRing is an open-source alternative to hardware soundboxes. It works by securely listening to incoming notifications of UPI apps running on your device.',
                   ),
                   actions: [
                     TextButton(
