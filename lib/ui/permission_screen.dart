@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:notification_listener_service/notification_listener_service.dart';
 import 'dashboard_screen.dart';
 
@@ -44,12 +45,14 @@ class _PermissionScreenState extends State<PermissionScreen>
   }
 
   Future<void> _requestPermission() async {
-    final bool status = await NotificationListenerService.requestPermission();
-    setState(() {
-      _isGranted = status;
-    });
-    if (_isGranted && mounted) {
-      _navigateToDashboard();
+    const platform = MethodChannel('com.poslyt.rupeering/settings');
+    try {
+      await platform.invokeMethod('openNotificationSettings');
+    } catch (e) {
+      // Fallback to plugin if platform channel fails
+      try {
+        await NotificationListenerService.requestPermission();
+      } catch (_) {}
     }
   }
 

@@ -15,6 +15,7 @@ class TTSService {
     'English': 'en-IN',
     'Malayalam': 'ml-IN',
     'Hindi': 'hi-IN',
+    'Kannada': 'kn-IN',
   };
 
   String _currentLanguageCode = 'en-IN'; // Default
@@ -55,21 +56,44 @@ class TTSService {
     }
   }
 
-  Future<void> speakPaymentReceived(String amount) async {
+  Future<void> speakPaymentReceived(
+    String amount, {
+    String appName = 'UPI',
+  }) async {
     String textToSpeak = '';
 
-    // Choose phrase based on language. You can expand this for translation files later.
+    // Clean app name for TTS (e.g., com.phonepe.app -> PhonePe)
+    String cleanAppName = appName;
+    if (appName.contains('paytm'))
+      cleanAppName = 'Paytm';
+    else if (appName.contains('phonepe'))
+      cleanAppName = 'PhonePe';
+    else if (appName.contains('paisa') || appName.contains('google'))
+      cleanAppName = 'Google Pay';
+    else if (appName.contains('bhim') || appName.contains('upiapp'))
+      cleanAppName = 'BHIM UPI';
+    else if (appName.contains('bharatpe'))
+      cleanAppName = 'BharatPe';
+    else if (appName.contains('navi'))
+      cleanAppName = 'Navi';
+
+    // Choose phrase based on language.
     switch (_currentLanguageCode) {
       case 'ml-IN':
         textToSpeak =
-            '$amount രൂപ ലഭിച്ചിരിക്കുന്നു'; // "₹ amount received" in Malayalam
+            '$cleanAppName ൽ നിന്ന് $amount രൂപ ലഭിച്ചിരിക്കുന്നു. നന്ദി.'; // "₹ amount received from App. Thank you."
         break;
       case 'hi-IN':
-        textToSpeak = '$amount रुपये प्राप्त हुए'; // Hindi
+        textToSpeak =
+            '$cleanAppName पर $amount रुपये प्राप्त हुए. धन्यवाद.'; // "₹ amount received on App. Thank you."
+        break;
+      case 'kn-IN':
+        textToSpeak =
+            '$cleanAppName ಮೂಲಕ $amount ರೂಪಾಯಿ ಸ್ವೀಕರಿಸಲಾಗಿದೆ. ಧನ್ಯವಾದಗಳು.'; // Kannada
         break;
       case 'en-IN':
       default:
-        textToSpeak = 'Received $amount rupees securely.'; // English
+        textToSpeak = 'Received $amount rupees on $cleanAppName. Thank you.';
         break;
     }
 
