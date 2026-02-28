@@ -18,7 +18,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _selectedLanguage = _ttsService.currentLanguage;
   }
 
-  final List<String> _languages = ['English', 'Malayalam', 'Hindi'];
+  final List<String> _languages = TTSService.languageCodes.keys.toList();
 
   @override
   Widget build(BuildContext context) {
