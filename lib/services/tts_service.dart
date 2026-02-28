@@ -15,9 +15,7 @@ class TTSService {
     'English': 'en-IN',
     'Malayalam': 'ml-IN',
     'Hindi': 'hi-IN',
-    'Tamil': 'ta-IN',
     'Kannada': 'kn-IN',
-    'Telugu': 'te-IN',
   };
 
   String _currentLanguageCode = 'en-IN'; // Default
@@ -89,17 +87,9 @@ class TTSService {
         textToSpeak =
             '$cleanAppName पर $amount रुपये प्राप्त हुए. धन्यवाद.'; // "₹ amount received on App. Thank you."
         break;
-      case 'ta-IN':
-        textToSpeak =
-            '$cleanAppName மூலம் $amount ரூபாய் பெறப்பட்டது. நன்றி.'; // Tamil
-        break;
       case 'kn-IN':
         textToSpeak =
             '$cleanAppName ಮೂಲಕ $amount ರೂಪಾಯಿ ಸ್ವೀಕರಿಸಲಾಗಿದೆ. ಧನ್ಯವಾದಗಳು.'; // Kannada
-        break;
-      case 'te-IN':
-        textToSpeak =
-            '$cleanAppName ద్వారా $amount రూపాయలు స్వీకరించబడ్డాయి. ధన్యవాదాలు.'; // Telugu
         break;
       case 'en-IN':
       default:
