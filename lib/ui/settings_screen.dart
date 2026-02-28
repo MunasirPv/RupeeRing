@@ -11,11 +11,13 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   final TTSService _ttsService = TTSService();
   late String _selectedLanguage;
+  late bool _isVoiceEnabled;
 
   @override
   void initState() {
     super.initState();
     _selectedLanguage = _ttsService.currentLanguage;
+    _isVoiceEnabled = _ttsService.isVoiceEnabled;
   }
 
   final List<String> _languages = TTSService.languageCodes.keys.toList();
@@ -43,6 +45,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 color: Colors.blue,
               ),
             ),
+          ),
+          SwitchListTile(
+            secondary: const Icon(Icons.volume_up),
+            title: const Text('Enable Voice Announcements'),
+            subtitle: const Text('Turn off to mute all payment alerts'),
+            value: _isVoiceEnabled,
+            activeColor: Colors.blue.shade700,
+            onChanged: (bool value) {
+              setState(() {
+                _isVoiceEnabled = value;
+              });
+              _ttsService.toggleVoiceEnabled(value);
+            },
           ),
           ListTile(
             leading: const Icon(Icons.language),
