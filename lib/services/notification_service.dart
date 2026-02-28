@@ -34,7 +34,10 @@ class AppNotificationService {
       );
 
       if (amount != null) {
-        await _ttsService.speakPaymentReceived(amount);
+        await _ttsService.speakPaymentReceived(
+          amount,
+          appName: packageName ?? 'Unknown',
+        );
 
         await DatabaseService().insertTransaction(
           TransactionModel(

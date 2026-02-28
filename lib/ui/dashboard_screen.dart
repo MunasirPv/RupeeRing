@@ -164,7 +164,7 @@ class DashboardScreen extends ConsumerWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
         onTap: () {
-          _ttsService.speakPaymentReceived(tx.amount);
+          _ttsService.speakPaymentReceived(tx.amount, appName: tx.appName);
         },
         leading: CircleAvatar(
           backgroundColor: iconColor.withOpacity(0.2),
