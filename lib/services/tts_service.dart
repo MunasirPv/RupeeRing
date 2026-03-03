@@ -22,6 +22,8 @@ class TTSService {
 
   bool _isVoiceEnabled = true;
   bool get isVoiceEnabled => _isVoiceEnabled;
+  bool _overrideSilentMode = false;
+  bool get overrideSilentMode => _overrideSilentMode;
   static const MethodChannel _platform = MethodChannel(
     'com.poslyt.rupeering/settings',
   );
@@ -46,6 +48,7 @@ class TTSService {
     final prefs = await SharedPreferences.getInstance();
     _currentLanguageCode = prefs.getString('tts_language_code') ?? 'en-IN';
     _isVoiceEnabled = prefs.getBool('tts_is_voice_enabled') ?? true;
+    _overrideSilentMode = prefs.getBool('tts_override_silent_mode') ?? false;
 
     await _flutterTts.setLanguage(_currentLanguageCode);
     await _flutterTts.setSpeechRate(0.5);
@@ -57,6 +60,30 @@ class TTSService {
     _isVoiceEnabled = enabled;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('tts_is_voice_enabled', enabled);
+  }
+
+  Future<void> toggleOverrideSilentMode(bool enabled) async {
+    _overrideSilentMode = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('tts_override_silent_mode', enabled);
+  }
+
+  Future<void> testVoice() async {
+    String message = "";
+    switch (_currentLanguageCode) {
+      case 'ml-IN':
+        message = "വോയ്‌സ് ടെസ്റ്റ് വിജയിച്ചു.";
+        break;
+      case 'hi-IN':
+        message = "वॉयस टेस्ट सफल रहा।";
+        break;
+      case 'kn-IN':
+        message = "ಧ್ವನಿ ಪರೀಕ್ಷೆ ಯಶಸ್ವಿಯಾಗಿದೆ.";
+        break;
+      default:
+        message = "Voice test successful.";
+    }
+    await _speak(message);
   }
 
   Future<void> setLanguage(String languageName) async {
@@ -117,17 +144,25 @@ class TTSService {
     }
 
     if (Platform.isAndroid) {
-      try {
-        await _platform.invokeMethod('speakAlarm', {
-          "text": textToSpeak,
-          "language": _currentLanguageCode,
-        });
-      } catch (e) {
-        // Fallback to media stream if native binding fails
-        await _flutterTts.speak(textToSpeak);
-      }
+      await _speak(textToSpeak);
     } else {
       await _flutterTts.speak(textToSpeak);
+    }
+  }
+
+  Future<void> _speak(String text) async {
+    if (Platform.isAndroid) {
+      try {
+        await _platform.invokeMethod('speakAlarm', {
+          "text": text,
+          "language": _currentLanguageCode,
+          "overrideSilentMode": _overrideSilentMode,
+        });
+      } catch (e) {
+        await _flutterTts.speak(text);
+      }
+    } else {
+      await _flutterTts.speak(text);
     }
   }
 }

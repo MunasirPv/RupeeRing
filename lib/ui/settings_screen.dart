@@ -12,12 +12,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final TTSService _ttsService = TTSService();
   late String _selectedLanguage;
   late bool _isVoiceEnabled;
+  late bool _overrideSilentMode;
 
   @override
   void initState() {
     super.initState();
     _selectedLanguage = _ttsService.currentLanguage;
     _isVoiceEnabled = _ttsService.isVoiceEnabled;
+    _overrideSilentMode = _ttsService.overrideSilentMode;
   }
 
   final List<String> _languages = TTSService.languageCodes.keys.toList();
@@ -35,15 +37,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: ListView(
         children: [
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              'Voice Settings',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-              ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 8.0,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Voice Settings',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: () => _ttsService.testVoice(),
+                  icon: const Icon(Icons.play_circle_fill),
+                  label: const Text('Test Voice'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.blue.shade900,
+                  ),
+                ),
+              ],
             ),
           ),
           SwitchListTile(
@@ -57,6 +75,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _isVoiceEnabled = value;
               });
               _ttsService.toggleVoiceEnabled(value);
+            },
+          ),
+          SwitchListTile(
+            secondary: const Icon(Icons.notifications_active),
+            title: const Text('Announce even in Silent Mode'),
+            subtitle: const Text('Bypass system silent/vibrate settings'),
+            value: _overrideSilentMode,
+            activeColor: Colors.blue.shade700,
+            onChanged: (bool value) {
+              setState(() {
+                _overrideSilentMode = value;
+              });
+              _ttsService.toggleOverrideSilentMode(value);
             },
           ),
           ListTile(
