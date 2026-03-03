@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,6 +20,12 @@ class TTSService {
     'Kannada': 'kn-IN',
   };
 
+  bool _isVoiceEnabled = true;
+  bool get isVoiceEnabled => _isVoiceEnabled;
+  static const MethodChannel _platform = MethodChannel(
+    'com.poslyt.rupeering/settings',
+  );
+
   String _currentLanguageCode = 'en-IN'; // Default
   String get currentLanguage => languageCodes.entries
       .firstWhere(
@@ -37,11 +45,18 @@ class TTSService {
 
     final prefs = await SharedPreferences.getInstance();
     _currentLanguageCode = prefs.getString('tts_language_code') ?? 'en-IN';
+    _isVoiceEnabled = prefs.getBool('tts_is_voice_enabled') ?? true;
 
     await _flutterTts.setLanguage(_currentLanguageCode);
     await _flutterTts.setSpeechRate(0.5);
     await _flutterTts.setVolume(1.0);
     await _flutterTts.setPitch(1.0);
+  }
+
+  Future<void> toggleVoiceEnabled(bool enabled) async {
+    _isVoiceEnabled = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('tts_is_voice_enabled', enabled);
   }
 
   Future<void> setLanguage(String languageName) async {
@@ -97,6 +112,22 @@ class TTSService {
         break;
     }
 
-    await _flutterTts.speak(textToSpeak);
+    if (!_isVoiceEnabled) {
+      return; // Global mute toggle is enabled
+    }
+
+    if (Platform.isAndroid) {
+      try {
+        await _platform.invokeMethod('speakAlarm', {
+          "text": textToSpeak,
+          "language": _currentLanguageCode,
+        });
+      } catch (e) {
+        // Fallback to media stream if native binding fails
+        await _flutterTts.speak(textToSpeak);
+      }
+    } else {
+      await _flutterTts.speak(textToSpeak);
+    }
   }
 }
