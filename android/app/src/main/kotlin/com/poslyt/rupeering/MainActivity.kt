@@ -32,9 +32,10 @@ class MainActivity: FlutterActivity(), TextToSpeech.OnInitListener {
                 "speakAlarm" -> {
                     val text = call.argument<String>("text")
                     val languageCode = call.argument<String>("language") ?: "en-IN"
+                    val overrideSilentMode = call.argument<Boolean>("overrideSilentMode") ?: false
                     
                     if (text != null && isTtsInitialized) {
-                        speakOverAlarmStream(text, languageCode)
+                        speakOverAlarmStream(text, languageCode, overrideSilentMode)
                         result.success(true)
                     } else {
                         result.error("TTS_ERROR", "TTS not initialized or text is null", null)
@@ -53,13 +54,15 @@ class MainActivity: FlutterActivity(), TextToSpeech.OnInitListener {
         }
     }
 
-    private fun speakOverAlarmStream(text: String, languageCode: String) {
-        // 1. Check Ringer Mode to Respect Silent/Vibrate
-        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        when (audioManager.ringerMode) {
-            AudioManager.RINGER_MODE_SILENT, AudioManager.RINGER_MODE_VIBRATE -> {
-                println("RupeeRing: Aborting TTS because phone is in Silent/Vibrate mode.")
-                return 
+    private fun speakOverAlarmStream(text: String, languageCode: String, overrideSilentMode: Boolean) {
+        // 1. Check Ringer Mode to Respect Silent/Vibrate if not overridden
+        if (!overrideSilentMode) {
+            val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            when (audioManager.ringerMode) {
+                AudioManager.RINGER_MODE_SILENT, AudioManager.RINGER_MODE_VIBRATE -> {
+                    println("RupeeRing: Aborting TTS because phone is in Silent/Vibrate mode.")
+                    return 
+                }
             }
         }
 
