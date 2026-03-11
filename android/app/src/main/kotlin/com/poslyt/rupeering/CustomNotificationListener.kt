@@ -46,7 +46,9 @@ class CustomNotificationListener : NotificationListener() {
             "com.google.android.apps.nbu.paisa.merchant",
             "in.org.npci.upiapp",
             "com.bharatpe.app",
-            "com.naviapp"
+            "com.naviapp",
+            "com.fampay.in",
+            "com.dreamplug.androidapp"
         )
         return allowedPackages.contains(packageName)
     }
@@ -82,6 +84,8 @@ class CustomNotificationListener : NotificationListener() {
             packageName.contains("bhim") || packageName.contains("upiapp") -> "BHIM UPI"
             packageName.contains("bharatpe") -> "BharatPe"
             packageName.contains("navi") -> "Navi"
+            packageName.contains("fampay") -> "FamPay"
+            packageName.contains("dreamplug") -> "CRED"
             else -> "UPI"
         }
 

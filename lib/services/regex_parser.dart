@@ -22,6 +22,8 @@ class NotificationParser {
     'in.org.npci.upiapp', // BHIM
     'com.bharatpe.app', // BharatPe
     'com.naviapp', // Navi
+    'com.fampay.in', // FamPay
+    'com.dreamplug.androidapp', // CRED
   ];
 
   static bool isTargetApp(String? packageName) {

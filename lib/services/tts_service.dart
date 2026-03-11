@@ -118,6 +118,10 @@ class TTSService {
       cleanAppName = 'BharatPe';
     else if (appName.contains('navi'))
       cleanAppName = 'Navi';
+    else if (appName.contains('fampay'))
+      cleanAppName = 'FamPay';
+    else if (appName.contains('dreamplug'))
+      cleanAppName = 'CRED';
 
     // Choose phrase based on language.
     switch (_currentLanguageCode) {
