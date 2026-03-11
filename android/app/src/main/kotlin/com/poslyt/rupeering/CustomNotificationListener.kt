@@ -3,6 +3,7 @@ package com.poslyt.rupeering
 import android.service.notification.StatusBarNotification
 import android.os.Build
 import android.os.Bundle
+import android.content.ComponentName
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
@@ -27,9 +28,22 @@ class CustomNotificationListener : NotificationListener() {
         if (isTargetApp(packageName)) {
             val amount = extractReceivedAmount(title, text)
             if (amount != null) {
+                // 1. Announce via TTS
                 announcePayment(amount, packageName)
+                
+                // 2. Log to Local Database
+                val dbManager = DatabaseManager(applicationContext)
+                dbManager.insertTransaction(packageName, amount)
             }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    override fun onListenerDisconnected() {
+        super.onListenerDisconnected()
+        Log.w(TAG, "Notification listener disconnected! Attempting to rebind...")
+        // Request rebind to restart the service if the system killed it
+        requestRebind(ComponentName(applicationContext, CustomNotificationListener::class.java))
     }
 
     private fun isTargetApp(packageName: String): Boolean {
@@ -41,7 +55,9 @@ class CustomNotificationListener : NotificationListener() {
             "com.google.android.apps.nbu.paisa.merchant",
             "in.org.npci.upiapp",
             "com.bharatpe.app",
-            "com.naviapp"
+            "com.naviapp",
+            "com.fampay.in",
+            "com.dreamplug.androidapp"
         )
         return allowedPackages.contains(packageName)
     }
@@ -77,6 +93,8 @@ class CustomNotificationListener : NotificationListener() {
             packageName.contains("bhim") || packageName.contains("upiapp") -> "BHIM UPI"
             packageName.contains("bharatpe") -> "BharatPe"
             packageName.contains("navi") -> "Navi"
+            packageName.contains("fampay") -> "FamPay"
+            packageName.contains("dreamplug") -> "CRED"
             else -> "UPI"
         }
 
