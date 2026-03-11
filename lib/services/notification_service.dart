@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:notification_listener_service/notification_listener_service.dart';
 import 'package:notification_listener_service/notification_event.dart';
 import 'regex_parser.dart';
@@ -34,10 +35,15 @@ class AppNotificationService {
       );
 
       if (amount != null) {
-        await _ttsService.speakPaymentReceived(
-          amount,
-          appName: packageName ?? 'Unknown',
-        );
+        // On Android, the announcement is handled by the Native CustomNotificationListener
+        // which works even in terminated state.
+        // We only call speak here for non-Android platforms (if any) or fallback.
+        if (!Platform.isAndroid) {
+          await _ttsService.speakPaymentReceived(
+            amount,
+            appName: packageName ?? 'Unknown',
+          );
+        }
 
         await DatabaseService().insertTransaction(
           TransactionModel(
