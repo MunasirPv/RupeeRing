@@ -3,6 +3,7 @@ package com.poslyt.rupeering
 import android.service.notification.StatusBarNotification
 import android.os.Build
 import android.os.Bundle
+import android.content.ComponentName
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
@@ -35,6 +36,14 @@ class CustomNotificationListener : NotificationListener() {
                 dbManager.insertTransaction(packageName, amount)
             }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    override fun onListenerDisconnected() {
+        super.onListenerDisconnected()
+        Log.w(TAG, "Notification listener disconnected! Attempting to rebind...")
+        // Request rebind to restart the service if the system killed it
+        requestRebind(ComponentName(applicationContext, CustomNotificationListener::class.java))
     }
 
     private fun isTargetApp(packageName: String): Boolean {
