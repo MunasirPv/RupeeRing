@@ -43,16 +43,21 @@ class AppNotificationService {
             amount,
             appName: packageName ?? 'Unknown',
           );
-        }
 
-        await DatabaseService().insertTransaction(
-          TransactionModel(
-            appName: packageName ?? 'Unknown',
-            amount: amount,
-            timestamp: DateTime.now(),
-          ),
-        );
-        onNewTransaction?.call();
+          await DatabaseService().insertTransaction(
+            TransactionModel(
+              appName: packageName ?? 'Unknown',
+              amount: amount,
+              timestamp: DateTime.now(),
+            ),
+          );
+          onNewTransaction?.call();
+        } else {
+          // On Android, Native service handles TTS and DB Insert.
+          // Wait briefly for native DB write to complete, then refresh UI
+          await Future.delayed(const Duration(milliseconds: 500));
+          onNewTransaction?.call();
+        }
       }
     });
 

@@ -27,7 +27,12 @@ class CustomNotificationListener : NotificationListener() {
         if (isTargetApp(packageName)) {
             val amount = extractReceivedAmount(title, text)
             if (amount != null) {
+                // 1. Announce via TTS
                 announcePayment(amount, packageName)
+                
+                // 2. Log to Local Database
+                val dbManager = DatabaseManager(applicationContext)
+                dbManager.insertTransaction(packageName, amount)
             }
         }
     }
